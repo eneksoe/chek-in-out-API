@@ -35,4 +35,12 @@ public class ParkingEvent {
         result = 31 * result + (exitTime != null ? exitTime.hashCode() : 0);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "ParkingEvent{" +
+                "enterTime=" + enterTime +
+                ", exitTime=" + exitTime +
+                '}';
+    }
 }

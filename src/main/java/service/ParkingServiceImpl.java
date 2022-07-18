@@ -1,6 +1,7 @@
 package service;
 
 import exception.CarAlreadyRegisteredException;
+import exception.CarNotRegisteredException;
 import model.Car;
 import model.ParkingEvent;
 import validation.Validator;
@@ -50,7 +51,24 @@ public class ParkingServiceImpl implements ParkingService {
 
     @Override
     public void out(Car car) {
+        Validator.validateNotNull(car);
 
+        carEvent.compute(car, (existingCar, parkingEvents) -> {
+            var time = timeGenerator.get();
+            if (parkingEvents == null) {
+                throw new CarNotRegisteredException();
+            }
+
+            ParkingEvent last = parkingEvents.getLast();
+
+            if (!last.isClosed()) {
+                last.close(time);
+            } else {
+                throw new CarNotRegisteredException();
+            }
+
+            return parkingEvents;
+        });
     }
 
     @Override

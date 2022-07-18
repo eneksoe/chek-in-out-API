@@ -62,9 +62,8 @@ class ParkingServiceTest {
     @Test
     void closeParkingEvent() {
         var car = new Car(NUMBER);
-        var map = GetSourceCarEvent(car);
+        var map = getSourceCarEvent(car);
         var expectedEvents = expectedEventAfterClose();
-
         parkingService = new ParkingServiceImpl(map, PARKING_SLOTS, timeGenerator);
 
         parkingService.out(car);
@@ -77,14 +76,17 @@ class ParkingServiceTest {
     private LinkedList<ParkingEvent> expectedEventAfterClose() {
         ParkingEvent expectedEvent = new ParkingEvent(timeGenerator.get());
         expectedEvent.close(closeTime);
+        timeGenerator = () -> closeTime;
         LinkedList<ParkingEvent> parkingEvents = new LinkedList<>();
         parkingEvents.add(expectedEvent);
         return parkingEvents;
     }
 
-    private HashMap<Car, LinkedList<ParkingEvent>> GetSourceCarEvent(Car car) {
+    private HashMap<Car, LinkedList<ParkingEvent>> getSourceCarEvent(Car car) {
         HashMap<Car, LinkedList<ParkingEvent>> map = new HashMap<>();
         var events = new LinkedList<ParkingEvent>();
+        ParkingEvent enterEvent = new ParkingEvent(LocalDateTime.of(
+                2000,1,1,1,1,1,1));
         events.add(new ParkingEvent(timeGenerator.get()));
         map.put(car, events);
         return map;
