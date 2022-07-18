@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.function.Supplier;
 
 import static org.assertj.core.api.Assertions.*;
@@ -20,11 +19,8 @@ class ParkingServiceTest {
     private static final Integer PARKING_SLOTS = 5;
     private ParkingService parkingService;
     private Supplier<LocalDateTime> timeGenerator = () -> LocalDateTime.of(
-            2000,1,1,1,1,1,1);
+            2000, 1, 1, 1, 1, 1, 1);
 
-    @BeforeEach
-    void setUp() {
-    }
 
     @Test
     void registerCar() {
@@ -52,7 +48,7 @@ class ParkingServiceTest {
 
         assertThatExceptionOfType(CarAlreadyRegisteredException.class)
                 .isThrownBy(() -> parkingService.register(car))
-                .withMessage("Car Already Registered!");
+                .withMessage("Car is already registered!");
     }
 
     private LinkedList<ParkingEvent> getExpectedEvents() {
@@ -60,5 +56,17 @@ class ParkingServiceTest {
         ParkingEvent expectedParkingEvent = new ParkingEvent(timeGenerator.get());
         parkingEvents.add(expectedParkingEvent);
         return parkingEvents;
+    }
+
+    @Test
+    void closeParkingEvent() {
+        var car = new Car(NUMBER);
+        var map = new HashMap<Car, LinkedList<ParkingEvent>>();
+        var events = new LinkedList<ParkingEvent>();
+        events.add(new ParkingEvent(timeGenerator.get()));
+        map.put(car, events);
+        parkingService = new ParkingServiceImpl(map, PARKING_SLOTS, timeGenerator);
+
+        parkingService.out(car);
     }
 }
