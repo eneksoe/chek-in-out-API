@@ -7,6 +7,7 @@ import model.ParkingEvent;
 import validation.Validator;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -88,6 +89,20 @@ public class ParkingServiceImpl implements ParkingService {
 
     @Override
     public long getHitInterval(LocalDateTime from, LocalDateTime to) {
-        return 0;
+var time = timeGenerator.get();
+        return carEvent.entrySet().stream()
+                .map(Map.Entry::getValue)
+                .flatMap(Collection::stream)
+                .map(ParkingEvent::getEnterTime)
+                .filter(enterTime-> isBeforeInclusive(to, enterTime) && isAfterInclusive(from, enterTime))
+                .count();
+    }
+
+    private boolean isAfterInclusive(LocalDateTime from, LocalDateTime enterTime) {
+        return enterTime.compareTo(from) >= 0;
+    }
+
+    private boolean isBeforeInclusive(LocalDateTime to, LocalDateTime enterTime) {
+        return enterTime.compareTo(to) <= 0;
     }
 }

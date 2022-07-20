@@ -123,6 +123,17 @@ class ParkingServiceTest {
 
     @Test
     void getHitIntervalTest() {
+        var map = getCarEventsWithThreeEvents();
+        parkingService = new ParkingServiceImpl(map, 10, timeGenerator);
+        var from = LocalDateTime.of(
+                2000,1,1,1,1,1,2);
+        var to = LocalDateTime.of(
+                2000,1,1,1,1,1,4);
+
+        long hitsInInterval = parkingService.getHitInterval(from, to);
+
+        assertThat(hitsInInterval).isEqualTo(4);
+
 
     }
 }
