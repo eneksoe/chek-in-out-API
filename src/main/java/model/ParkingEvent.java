@@ -43,4 +43,8 @@ public class ParkingEvent {
                 ", exitTime=" + exitTime +
                 '}';
     }
+
+    public LocalDateTime getEnterTime() {
+        return enterTime;
+    }
 }

@@ -73,7 +73,17 @@ public class ParkingServiceImpl implements ParkingService {
 
     @Override
     public long getBusySlotCount() {
-        return 0;
+        return carEvent.entrySet().stream()
+                .map(Map.Entry::getValue)
+                .map(LinkedList::getLast)
+                .filter(this::beforeNowAndNotClosed)
+                .count();
+    }
+
+    private boolean beforeNowAndNotClosed(ParkingEvent event) {
+        LocalDateTime now = timeGenerator.get();
+        LocalDateTime enterTime = event.getEnterTime();
+        return now.isBefore(enterTime) && !event.isClosed();
     }
 
     @Override
